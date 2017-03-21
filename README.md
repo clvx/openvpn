@@ -61,4 +61,4 @@ Author Information
 
 Luis Michael Ibarra
 
-| clvx | Twitter, IRC, Reddit |
+clvx: Twitter, IRC, Reddit 
