@@ -1,0 +1,20 @@
+client
+
+proto "{{ openvpn_proto }}"
+
+{% for host in groups['lab-servers'] %}
+remote {{ hostvars[host]['ansible_host'] }} {{ openvpn_port }} 
+{% endfor %}
+
+dev tun
+
+nobind							
+remote-cert-tls	server				
+
+{% if openvpn_tls_push %}
+tls-auth	/etc/openvpn/keys/secret.key 1		
+{% endif %}
+
+ca      /etc/openvpn/keys/ca.crt
+cert    /etc/openvpn/keys/{{ inventory_hostname }}.crt
+key     /etc/openvpn/keys/{{ inventory_hostname }}.key	

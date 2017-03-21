@@ -1,0 +1,98 @@
+---
+- name: OpenVPN - Installing apt key
+  apt_key:
+      id: E158C569
+      keyserver: keyserver.ubuntu.com
+
+- name: OpenVPN - Add openvpn repo
+  apt_repository:
+      filename: openvpn
+      repo: deb http://build.openvpn.net/debian/openvpn/stable "{{ ansible_lsb.codename }}" main
+      state: present
+          
+- name: OpenVPN - Install openvpn
+  apt: 
+      name: "{{ item }}"
+      state: present 
+      update_cache: yes
+  with_items: [openvpn, openssl]
+  when: ansible_distribution == 'Ubuntu'
+
+- name: OpenVPN - Create keys directory
+  file:
+      path: "{{ openvpn_dir }}/keys" 
+      mode: 0700
+      owner: root
+      group: root
+      state: directory
+
+- name: OpenVPN - Transfer server template
+  template:
+      src: server.conf.j2
+      dest: /etc/openvpn/server.conf
+      owner: root
+      group: root
+      mode: 0644
+      backup: yes
+  notify: restart openvpn
+  when: inventory_hostname in groups['lab-servers']
+
+- name: OpenVPN - Transfer client template
+  template:
+      src: client.conf.j2
+      dest: /etc/openvpn/client.conf
+      owner: root
+      group: root
+      mode: 0644
+      backup: yes
+  notify: restart openvpn
+  when: inventory_hostname in groups['lab-clients']
+
+- name: OpenVPN - Transfer key
+  copy:
+      src: "{{ local_openvpn_keydir }}/{{ item }}.key"
+      dest: "{{ openvpn_keydir }}" 
+      owner: root
+      group: root
+      mode: 0600
+  with_items:
+      - "{{ inventory_hostname }}"
+  notify: reload openvpn
+
+- name: OpenVPN - TLS key
+  copy:
+      src: "{{ local_openvpn_keydir }}/{{ item }}.key"
+      dest: "{{ openvpn_keydir }}" 
+      owner: root
+      group: root
+      mode: 0600
+  with_items:
+      - secret
+  notify: reload openvpn
+  when: openvpn_tls_push == True
+
+- name: OpenVPN - Transfer server only files
+  copy:
+      src: "{{ local_openvpn_keydir }}/{{ item }}"
+      dest: "{{ openvpn_keydir }}" 
+      owner: root
+      group: root
+      mode: 0644
+  with_items:
+      - crl.pem
+      - "{{ openvpn_server_dh }}.pem"
+  notify: reload openvpn
+  when: inventory_hostname in groups['lab-servers']
+
+- name: OpenVPN - Transfer certificates
+  copy:
+      src: "{{ local_openvpn_keydir }}/{{ item }}"
+      dest: "{{ openvpn_keydir }}" 
+      owner: root
+      group: root
+      mode: 0644
+  with_items:
+      - ca.crt
+      - "{{ inventory_hostname }}.crt"
+  notify: reload openvpn
+

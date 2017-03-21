@@ -1,0 +1,69 @@
+proto "{{ openvpn_proto }}"
+
+port "{{ openvpn_port }}"
+
+dev tun
+
+#Puts OpenVPN in server mode. The IP subnet and subnet mask specify the subnet 
+#and mask to use for the VPN server and clients. this is expanded as follows:
+# mode server
+# tls-server
+# push "topology subnet"
+# ifconfig 10.200.0.1 255.255.255.0
+# ifconfig-pool 10.200.0.2 10.200.0.254	 255.255.255.0
+# push "route-gateway 10.200.0.1"
+server 10.200.0.0 255.255.255.0					
+topology subnet
+
+# Instruct OpenVPN to neither reopen the tun device, 
+# nor generate new keying material whenever the tunnel is restarted. 
+# These options are particulary useful in combination with user nobody, 
+# as the user nobody normally does not have the access right to open a new tun interface.
+persist-key
+persist-tun							
+
+# Used to remain the VPN connection remains up, even if there is no traffic 
+# flowing over the tunnel. This is expanded as follows:
+# ping 10			     Send a ping message to each client every 10 seconds
+# ping-restart 120		 Restart the connection if a client does not respond 
+# within 120 seconds.
+# push "ping 10"		 Push the ping statements to each client.
+# push "ping-restart 60"
+keepalive 10 60							
+
+# Instructs the OpenVPN server to only allow connections from VPN clients 
+# that have a certificate with the X.509 EKU attributes set to TLS Web Client Authentication. 
+# This prevents a hacker from setting up a rogue OpenVPN server using a client certificate.
+remote-cert-tls client
+
+# Enables a kind of "HMAC firewall" on OpenVPN's TCP/UDP port, where TLS control channel packets bearing an incorrect HMAC signature  can  be  dropped  immediately without response.
+{% if openvpn_tls_push %}
+tls-auth 	/etc/openvpn/keys/secret.key 0		
+{% endif %}
+
+#Without this file, the server cannot establish a secure TLS connection with 
+#clients.
+dh 		/etc/openvpn/keys/{{ openvpn_server_dh }}.pem
+
+ca		/etc/openvpn/keys/ca.crt
+
+cert	/etc/openvpn/keys/{{ inventory_hostname }}.crt
+
+crl-verify /etc/openvpn/keys/crl.pem
+
+# This file needs to be readable by the root user only, as anyone with read 
+# access to private keys can decrypt OpenVPN traffic.
+key		/etc/openvpn/keys/{{ inventory_hostname }}.key
+
+user nobody
+group nogroup
+
+verb 3
+
+# Tells OpenVPN to demonize itself.
+daemon								
+log-append	/var/log/openvpn.log
+
+status /var/run/openvpn.status 3
+
+

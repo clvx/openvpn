@@ -1,0 +1,5 @@
+[lab-servers]
+localhost
+
+[lab-clients]
+localhost

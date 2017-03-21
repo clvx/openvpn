@@ -1,0 +1,10 @@
+---
+- hosts: lab-servers
+  remote_user: root
+  roles:
+    - openvpn
+
+- hosts: lab-servers
+  remote_user: root
+  roles:
+    - openvpn
