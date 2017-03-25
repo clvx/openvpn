@@ -6,7 +6,7 @@ openvpn_server_dh: 2048
 openvpn_dir: /etc/openvpn
 openvpn_keydir: "{{ openvpn_dir }}/keys"
 
-deploy_key_dir: "{{ playbook_dir }}/files }}"
+deploy_key_dir: "{{ role_path }}/files"
 local_openvpn_keydir: "{{ deploy_key_dir }}" 
 openvpn_server_dh: "{{ lookup('pipe', 'basename {{ deploy_key_dir }}/dh*.pem | cut -d. -f1') }}" 
 
