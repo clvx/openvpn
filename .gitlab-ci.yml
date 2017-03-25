@@ -1,0 +1,27 @@
+image: ubuntu:16.04
+
+before_script:
+    - apt update && apt install python-pip libssl-dev git -y
+    - pip install ansible
+
+test_server:
+    script:
+        - ansible-galaxy install -p tests/ -r tests/requirements.yml
+        - ansible-playbook tests/test.yml -i tests/inventory --extra-vars "remote_host=lab-servers deploy_key_dir={{ playbook_dir }}/files" --syntax-check
+        - ansible-playbook tests/test.yml -i tests/inventory --extra-vars "remote_host=lab-servers deploy_key_dir={{ playbook_dir }}/files" --connection=local
+        - >
+          ansible-playbook tests/test.yml -i tests/inventory --extra-vars "remote_host=lab-servers deploy_key_dir={{ playbook_dir }}/files" --connection=local
+          | grep -q 'changed=0.*failed=0'
+          && (echo 'Idempotence test: pass' && exit 0)
+          || (echo 'Idempotence test: fail' && exit 1)
+
+test_client:
+    script:
+        - ansible-galaxy install -p tests/ -r tests/requirements.yml
+        - ansible-playbook tests/test.yml -i tests/inventory --extra-vars "remote_host=lab-clients deploy_key_dir={{ playbook_dir }}/files" --syntax-check
+        - ansible-playbook tests/test.yml -i tests/inventory --extra-vars "remote_host=lab-clients deploy_key_dir={{ playbook_dir }}/files" --connection=local
+        - >
+          ansible-playbook tests/test.yml -i tests/inventory --extra-vars "remote_host=lab-clients deploy_key_dir={{ playbook_dir }}/files" --connection=local
+          | grep -q 'changed=0.*failed=0'
+          && (echo 'Idempotence test: pass' && exit 0)
+          || (echo 'Idempotence test: fail' && exit 1)
