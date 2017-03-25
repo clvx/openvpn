@@ -1,5 +1,5 @@
 [lab-servers]
-localhost
+localhost ansible_host=127.0.0.1
 
 [lab-clients]
-localhost
+localhost ansible_host=127.0.0.1
