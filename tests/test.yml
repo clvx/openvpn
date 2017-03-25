@@ -1,10 +1,5 @@
 ---
-- hosts: lab-servers
-  remote_user: root
-  roles:
-    - openvpn
-
-- hosts: lab-servers
+- hosts: "{{ remote_host }}"
   remote_user: root
   roles:
     - openvpn
