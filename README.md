@@ -3,6 +3,14 @@ OpenVPN
 
 Role to install, configure and update OpenVPN servers and clients.
 
+Future Work
+-----------
+
+- Support for client config dir.
+- VPN gateway support per client. 
+- Push remote routes per client. 
+- PAM support, *maybe?* 
+
 Requirements
 ------------
 
