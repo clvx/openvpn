@@ -25,3 +25,25 @@ test_client:
           | grep -q 'changed=0.*failed=0'
           && (echo 'Idempotence test: pass' && exit 0)
           || (echo 'Idempotence test: fail' && exit 1)
+
+test_server_no_tls:
+    script:
+        - ansible-galaxy install -p tests/ -r tests/requirements.yml
+        - ansible-playbook tests/test.yml -i tests/inventory --extra-vars "remote_host=lab-servers deploy_key_dir={{ playbook_dir }}/files openvpn_tls_push=False" --syntax-check
+        - ansible-playbook tests/test.yml -i tests/inventory --extra-vars "remote_host=lab-servers deploy_key_dir={{ playbook_dir }}/files openvpn_tls_push=False" --connection=local
+        - >
+          ansible-playbook tests/test.yml -i tests/inventory --extra-vars "remote_host=lab-servers deploy_key_dir={{ playbook_dir }}/files openvpn_tls_push=False" --connection=local
+          | grep -q 'changed=0.*failed=0'
+          && (echo 'Idempotence test: pass' && exit 0)
+          || (echo 'Idempotence test: fail' && exit 1)
+
+test_client_no_tls:
+    script:
+        - ansible-galaxy install -p tests/ -r tests/requirements.yml
+        - ansible-playbook tests/test.yml -i tests/inventory --extra-vars "remote_host=lab-clients deploy_key_dir={{ playbook_dir }}/files openvpn_tls_push=False" --syntax-check
+        - ansible-playbook tests/test.yml -i tests/inventory --extra-vars "remote_host=lab-clients deploy_key_dir={{ playbook_dir }}/files openvpn_tls_push=False" --connection=local
+        - >
+          ansible-playbook tests/test.yml -i tests/inventory --extra-vars "remote_host=lab-clients deploy_key_dir={{ playbook_dir }}/files openvpn_tls_push=False" --connection=local
+          | grep -q 'changed=0.*failed=0'
+          && (echo 'Idempotence test: pass' && exit 0)
+          || (echo 'Idempotence test: fail' && exit 1)
