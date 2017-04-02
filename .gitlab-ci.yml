@@ -47,3 +47,15 @@ test_client_no_tls:
           | grep -q 'changed=0.*failed=0'
           && (echo 'Idempotence test: pass' && exit 0)
           || (echo 'Idempotence test: fail' && exit 1)
+
+test_server_ccd_yes:
+    script:
+        - ansible-galaxy install -p tests/ -r tests/requirements.yml
+        - ansible-playbook tests/test.yml -i tests/inventory --extra-vars "remote_host=lab-servers deploy_key_dir={{ playbook_dir }}/files openvpn_ccd=True" --syntax-check
+        - ansible-playbook tests/test.yml -i tests/inventory --extra-vars "remote_host=lab-servers deploy_key_dir={{ playbook_dir }}/files openvpn_ccd=True" --connection=local
+        - >
+          ansible-playbook tests/test.yml -i tests/inventory --extra-vars "remote_host=lab-servers deploy_key_dir={{ playbook_dir }}/files openvpn_ccd=True" --connection=local
+          | grep -q 'changed=0.*failed=0'
+          && (echo 'Idempotence test: pass' && exit 0)
+          || (echo 'Idempotence test: fail' && exit 1)
+
