@@ -96,3 +96,26 @@
       - "{{ inventory_hostname }}.crt"
   notify: reload openvpn
 
+- block:
+    - name: OpenVPN - CCD - Create CCD
+      file:  
+          path: "{{ openvpn_ccd_dir }}" 
+          mode: 0700
+          owner: root
+          group: root
+          state: directory
+      notify: reload openvpn
+    
+    - name: OpenVPN - CCD - Copy client templates
+      template:
+          src: "{{ item }}.j2"
+          dest: "{{ openvpn_ccd_dir }}/{{ item }}"
+          owner: root
+          group: root
+          mode: 0600
+          backup: yes
+      ignore_errors: yes
+      with_items: 
+          - "{{ groups['lab-clients'] }}"
+      notify: reload openvpn
+  when: (openvpn_ccd == True) and (inventory_hostname in groups['lab-servers']) 

@@ -10,4 +10,9 @@ deploy_key_dir: "{{ role_path }}/files"
 local_openvpn_keydir: "{{ deploy_key_dir }}" 
 openvpn_server_dh: "{{ lookup('pipe', 'basename {{ deploy_key_dir }}/dh*.pem | cut -d. -f1') }}" 
 
+# TLS signing key
 openvpn_tls_push: True
+
+#Client-config-dir
+openvpn_ccd: True
+openvpn_ccd_dir: "{{ openvpn_dir }}/ccd"
