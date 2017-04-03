@@ -51,6 +51,7 @@ test_client_no_tls:
 test_server_ccd_yes:
     script:
         - ansible-galaxy install -p tests/ -r tests/requirements.yml
+        - touch tests/openvpn/templates/localhost.j2
         - ansible-playbook tests/test.yml -i tests/inventory --extra-vars "remote_host=lab-servers deploy_key_dir={{ playbook_dir }}/files openvpn_ccd=True" --syntax-check
         - ansible-playbook tests/test.yml -i tests/inventory --extra-vars "remote_host=lab-servers deploy_key_dir={{ playbook_dir }}/files openvpn_ccd=True" --connection=local
         - >
