@@ -12,12 +12,12 @@ nobind
 remote-cert-tls	server				
 
 {% if openvpn_tls_push %}
-tls-auth	/etc/openvpn/keys/secret.key 1		
+tls-auth	"{{ openvpn_keydir }}/secret.key" 1		
 {% endif %}
 
-ca      /etc/openvpn/keys/ca.crt
-cert    /etc/openvpn/keys/{{ inventory_hostname }}.crt
-key     /etc/openvpn/keys/{{ inventory_hostname }}.key	
+ca     "{{ openvpn_keydir }}/ca.crt"
+cert   "{{ openvpn_keydir }}/{{ inventory_hostname }}.crt"
+key    "{{ openvpn_keydir }}/{{ inventory_hostname }}.key"
 
 daemon
 log-append /var/log/openvpn.log

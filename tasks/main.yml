@@ -96,3 +96,35 @@
       - "{{ inventory_hostname }}.crt"
   notify: reload openvpn
 
+- block:
+    - name: OpenVPN - CCD - Create CCD
+      file:  
+          path: "{{ openvpn_ccd_dir }}" 
+          mode: 0700
+          owner: root
+          group: root
+          state: directory
+      notify: reload openvpn
+    
+    - name: OpenVPN - CCD - Copy client templates
+      template:
+          src: "{{ item }}.j2"
+          dest: "{{ openvpn_ccd_dir }}/{{ item }}"
+          owner: root
+          group: root
+          mode: 0600
+          backup: yes
+      with_items: 
+          - "{{ groups['lab-clients'] }}"
+      notify: reload openvpn
+      register: rst
+      ignore_errors: yes
+
+    - set_fact:
+        expected_message: "Unable to find '{{ rst.results[1].invocation.module_args.src }}' in expected paths."
+
+    - name: OpenVPN - CCD - Check Fail
+      fail: msg="Copy client templates failed"
+      when: expected_message not in rst.results[1].msg
+
+  when: (openvpn_ccd == True) and (inventory_hostname in groups['lab-servers']) 
