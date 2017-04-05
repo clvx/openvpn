@@ -1,6 +1,6 @@
-proto "{{ openvpn_proto }}"
+proto {{ openvpn_proto }}
 
-port "{{ openvpn_port }}"
+port {{ openvpn_port }}
 
 dev tun
 
@@ -38,22 +38,22 @@ remote-cert-tls client
 
 # Enables a kind of "HMAC firewall" on OpenVPN's TCP/UDP port, where TLS control channel packets bearing an incorrect HMAC signature  can  be  dropped  immediately without response.
 {% if openvpn_tls_push %}
-tls-auth 	"{{ openvpn_keydir }}/secret.key" 0
+tls-auth 	{{ openvpn_keydir }}/secret.key 0
 {% endif %}
 
 #Without this file, the server cannot establish a secure TLS connection with 
 #clients.
-dh 		"{{ openvpn_keydir }}/{{ openvpn_server_dh }}.pem"
+dh 		{{ openvpn_keydir }}/{{ openvpn_server_dh }}.pem
 
-ca		"{{ openvpn_keydir }}/ca.crt"
+ca		{{ openvpn_keydir }}/ca.crt
 
-cert	"{{ openvpn_keydir }}/{{ inventory_hostname }}.crt"
+cert	{{ openvpn_keydir }}/{{ inventory_hostname }}.crt
 
-crl-verify "{{ openvpn_keydir }}/crl.pem"
+crl-verify {{ openvpn_keydir }}/crl.pem
 
 # This file needs to be readable by the root user only, as anyone with read 
 # access to private keys can decrypt OpenVPN traffic.
-key		"{{ openvpn_keydir }}/{{ inventory_hostname }}.key"
+key		{{ openvpn_keydir }}/{{ inventory_hostname }}.key
 
 user nobody
 group nogroup
@@ -69,5 +69,5 @@ status /var/run/openvpn.status 3
 comp-lzo
 
 {% if openvpn_ccd %}
-client-config-dir "{{ openvpn_ccd_dir }}"
+client-config-dir {{ openvpn_ccd_dir }}
 {% endif %}

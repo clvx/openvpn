@@ -1,6 +1,6 @@
 client
 
-proto "{{ openvpn_proto }}"
+proto {{ openvpn_proto }}
 
 {% for host in groups['lab-servers'] %}
 remote {{ hostvars[host]['ansible_host'] }} {{ openvpn_port }} 
@@ -12,12 +12,12 @@ nobind
 remote-cert-tls	server				
 
 {% if openvpn_tls_push %}
-tls-auth	"{{ openvpn_keydir }}/secret.key" 1		
+tls-auth	{{ openvpn_keydir }}/secret.key 1		
 {% endif %}
 
-ca     "{{ openvpn_keydir }}/ca.crt"
-cert   "{{ openvpn_keydir }}/{{ inventory_hostname }}.crt"
-key    "{{ openvpn_keydir }}/{{ inventory_hostname }}.key"
+ca     {{ openvpn_keydir }}/ca.crt"
+cert   {{ openvpn_keydir }}/{{ inventory_hostname }}.crt
+key    {{ openvpn_keydir }}/{{ inventory_hostname }}.key
 
 daemon
 log-append /var/log/openvpn.log
