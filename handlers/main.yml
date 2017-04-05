@@ -1,11 +1,25 @@
 ---
 
-- name: restart openvpn
-  service: 
-      name: openvpn
-      state: restarted
+- block:
+    - name: restart openvpn
+      service: 
+          name: openvpn@server
+          state: restarted
 
-- name: reload openvpn
-  service:
-      name: openvpn
-      state: reloaded
+    - name: reload openvpn
+      service:
+          name: openvpn@server
+          state: reloaded
+  when:  inventory_hostname in groups['lab-servers']
+
+- block:
+    - name: restart openvpn
+      service: 
+          name: openvpn@client
+          state: restarted
+
+    - name: reload openvpn
+      service:
+          name: openvpn@client
+          state: reloaded
+  when:  inventory_hostname in groups['lab-clients']
