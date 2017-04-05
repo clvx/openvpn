@@ -15,7 +15,7 @@ remote-cert-tls	server
 tls-auth	{{ openvpn_keydir }}/secret.key 1		
 {% endif %}
 
-ca     {{ openvpn_keydir }}/ca.crt"
+ca     {{ openvpn_keydir }}/ca.crt
 cert   {{ openvpn_keydir }}/{{ inventory_hostname }}.crt
 key    {{ openvpn_keydir }}/{{ inventory_hostname }}.key
 

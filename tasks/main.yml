@@ -56,7 +56,7 @@
       group: root
       mode: 0600
   with_items:
-      - secret
+      - ta
   notify: reload openvpn
   when: openvpn_tls_push == True
 
