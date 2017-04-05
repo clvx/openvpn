@@ -1,4 +1,5 @@
 ---
 
-- src: https://gitlab.com/clvx/openvpn/repository/archive.tar.gz?ref=1-client-config-dir
+- src: clvx.openvpn
+  version: master
   name: openvpn
