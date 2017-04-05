@@ -1,15 +1,4 @@
 ---
-- name: OpenVPN - Installing apt key
-  apt_key:
-      id: E158C569
-      keyserver: keyserver.ubuntu.com
-
-- name: OpenVPN - Add openvpn repo
-  apt_repository:
-      filename: openvpn
-      repo: deb http://build.openvpn.net/debian/openvpn/stable "{{ ansible_lsb.codename }}" main
-      state: present
-          
 - name: OpenVPN - Install openvpn
   apt: 
       name: "{{ item }}"
