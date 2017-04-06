@@ -38,7 +38,7 @@ remote-cert-tls client
 
 # Enables a kind of "HMAC firewall" on OpenVPN's TCP/UDP port, where TLS control channel packets bearing an incorrect HMAC signature  can  be  dropped  immediately without response.
 {% if openvpn_tls_push %}
-tls-auth 	{{ openvpn_keydir }}/secret.key 0
+tls-auth 	{{ openvpn_keydir }}/ta.key 0
 {% endif %}
 
 #Without this file, the server cannot establish a secure TLS connection with 
