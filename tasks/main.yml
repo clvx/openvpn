@@ -68,8 +68,19 @@
       group: root
       mode: 0644
   with_items:
-      - crl.pem
       - "{{ openvpn_server_dh }}.pem"
+  notify: reload openvpn
+  when: inventory_hostname in groups['lab-servers']
+
+- name: OpenVPN - Transfer crl
+  copy:
+      src: "{{ local_openvpn_keydir }}/{{ item }}"
+      dest: "{{ openvpn_dir }}" 
+      owner: nobody
+      group: nogroup
+      mode: 0644
+  with_items:
+      - crl.pem
   notify: reload openvpn
   when: inventory_hostname in groups['lab-servers']
 

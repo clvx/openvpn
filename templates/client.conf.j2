@@ -12,7 +12,7 @@ nobind
 remote-cert-tls	server				
 
 {% if openvpn_tls_push %}
-tls-auth	{{ openvpn_keydir }}/secret.key 1		
+tls-auth	{{ openvpn_keydir }}/ta.key 1		
 {% endif %}
 
 ca     {{ openvpn_keydir }}/ca.crt
