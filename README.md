@@ -45,10 +45,13 @@ Example Playbook
     localhost
 
 - group_vars/localhost.yml
+
         ---
         openvpn_is_client: True
 
+
 or
+
         ---
         openvpn_is_server: True
 
