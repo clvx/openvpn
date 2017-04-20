@@ -16,3 +16,6 @@ openvpn_tls_push: True
 #Client-config-dir
 openvpn_ccd: True
 openvpn_ccd_dir: "{{ openvpn_dir }}/ccd"
+
+openvpn_is_client: False
+openvpn_is_server: False
