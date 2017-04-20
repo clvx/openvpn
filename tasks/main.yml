@@ -1,4 +1,9 @@
 ---
+- name: OpenVPN - Check if it's only client or server
+  fail:
+      msg: "Check variables - it can be only server or client not both"
+  when: "{{ (hostvars[inventory_hostname]['openvpn_is_client'] == True) and (hostvars[inventory_hostname]['openvpn_is_server'] == True) }}"
+
 - name: OpenVPN - Install openvpn
   apt: 
       name: "{{ item }}"
@@ -14,6 +19,7 @@
       owner: root
       group: root
       state: directory
+
 
 - name: OpenVPN - Transfer server template
   template:
