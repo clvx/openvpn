@@ -50,7 +50,7 @@ Example Playbook
         openvpn_is_client: True
 
 
-or
+or:
 
         ---
         openvpn_is_server: True
