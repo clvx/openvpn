@@ -42,13 +42,12 @@ Example Playbook
 
 - Inventory 
 
-    localhost
+        localhost
 
 - group_vars/localhost.yml
 
         ---
         openvpn_is_client: True
-
 
 or:
 
@@ -58,15 +57,11 @@ or:
 YOU CAN NOT ASSIGN `openvpn_is_client` and `openvpn_is_server` AT THE SAME TIME
  OR IT WILL FAIL.
 
-- Playbook 
+- Playbook:
 
-    - hosts: lab-servers
-      roles:
-        - openvpn
-
-    - hosts: lab-servers
-      roles:
-        - openvpn
+        - hosts: localhost
+          roles:
+            - openvpn
 
 License
 -------
