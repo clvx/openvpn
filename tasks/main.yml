@@ -30,7 +30,7 @@
       mode: 0644
       backup: yes
   notify: restart openvpn
-  when: inventory_hostname in groups['lab-servers']
+  when: openvpn_is_server == True
 
 - name: OpenVPN - Transfer client template
   template:
@@ -41,7 +41,7 @@
       mode: 0644
       backup: yes
   notify: restart openvpn
-  when: inventory_hostname in groups['lab-clients']
+  when: openvpn_is_client == True
 
 - name: OpenVPN - Transfer key
   copy:
@@ -76,7 +76,7 @@
   with_items:
       - "{{ openvpn_server_dh }}.pem"
   notify: reload openvpn
-  when: inventory_hostname in groups['lab-servers']
+  when: openvpn_is_server == True
 
 - name: OpenVPN - Transfer crl
   copy:
@@ -88,7 +88,7 @@
   with_items:
       - crl.pem
   notify: reload openvpn
-  when: inventory_hostname in groups['lab-servers']
+  when: openvpn_is_server == True
 
 - name: OpenVPN - Transfer certificates
   copy:
@@ -120,10 +120,11 @@
           group: root
           mode: 0644
           backup: yes
+      when: "{{ hostvars[item]['openvpn_is_client'] == True }}"
       with_items: 
-          - "{{ groups['lab-clients'] }}"
+          - "{{ groups['all'] }}"
       notify: reload openvpn
       register: rst
       ignore_errors: yes
 
-  when: (openvpn_ccd == True) and (inventory_hostname in groups['lab-servers']) 
+  when: (openvpn_ccd == True) and (openvpn_is_server == True)
